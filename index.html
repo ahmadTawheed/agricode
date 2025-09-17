@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGRICODE - الزراعة الرقمية</title>
+    
+    <!-- مكتبات CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- مكتبات JS -->
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <style>
+        :root {
+            --primary-color: #1a5d1a;
+            --primary-light: #2d7a2d;
+            --primary-dark: #0f3d0f;
+            --secondary-color: #4ade80;
+            --accent-color: #22c55e;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-light: #f3f4f6;
+            --bg-white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Tajawal', 'Roboto', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        body[dir="ltr"] {
+            font-family: 'Roboto', 'Tajawal', sans-serif;
+        }
+
+        /* شريط التقدم */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            z-index: 9999;
+            transition: width 0.3s ease;
+        }
+
+        /* صفحة الدخول */
+        .login-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+        }
+
+        .login-card {
+            background: var(--bg-white);
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 90%;
+        }
+
+        /* شريط التنقل السفلي */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-white);
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            padding: 0.5rem 0;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-light);
+        }
+
+        .nav-item:hover {
+            color: var(--primary-color);
+        }
+
+        .nav-item.active {
+            color: var(--primary-color);
+        }
+
+        /* الكروت */
+        .card {
+            background: var(--bg-white);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+
+        /* الأزرار */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            outline: none;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        /* الأيقونات */
+        .icon-box {
+            width: 60px;
+            height: 60px;
+            background: rgba(26, 93, 26, 0.1);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .icon-box i {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        /* الصفحات */
+        .page {
+            display: none;
+            min-height: calc(100vh - 80px);
+            padding: 2rem 1rem 5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* القائمة المنسدلة */
+        .dropdown {
+            position: relative;
+            margin: 1rem 0;
+        }
+
+        .dropdown select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            background: var(--bg-white);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        /* تأثيرات الأنيميشن */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* الألوان التدرجية */
+        .gradient-bg {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* تصميم متجاوب */
+        @media (max-width: 768px) {
+            .login-card {
+                padding: 2rem;
+            }
+            
+            .page {
+                padding: 1rem 0.5rem 4rem;
+            }
+            
+            .card {
+                padding: 1rem;
+            }
+        }
+
+        /* تأثير التحميل */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* زر العودة */
+        .back-btn {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: var(--bg-white);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            transform: translateX(-5px);
+        }
+
+        body[dir="ltr"] .back-btn {
+            left: auto;
+            right: 1rem;
+        }
+
+        body[dir="ltr"] .back-btn:hover {
+            transform: translateX(5px);
+        }
+
+        /* تصميم النوافذ المنبثقة */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.show .modal {
+            transform: scale(1);
+        }
+
+        .modal-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+        }
+
+        .modal-icon.danger {
+            background-color: rgba(239, 68, 68, 0.1);
+        }
+
+        .modal-icon.danger i {
+            color: #ef4444;
+        }
+
+        .modal-icon.info {
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+
+        .modal-icon.info i {
+            color: #3b82f6;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .modal-message {
+            color: #6b7280;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .modal-button {
+            flex: 1;
+            padding: 0.75rem;
+            border-radius: 10px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .modal-button.cancel {
+            background-color: #e5e7eb;
+            color: #4b5563;
+        }
+
+        .modal-button.cancel:hover {
+            background-color: #d1d5db;
+        }
+
+        .modal-button.confirm {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .modal-button.confirm:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .modal-button.danger {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .modal-button.danger:hover {
+            background-color: #dc2626;
+        }
+    </style>
+</head>
+<body>
+    <!-- شريط التقدم -->
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- صفحة الدخول -->
+    <div class="login-page" id="loginPage">
+        <div class="login-card" data-aos="fade-up">
+            <div class="text-center mb-6">
+                <div class="icon-box mx-auto mb-4">
+                    <i class="fas fa-seedling"></i>
+                </div>
+                <h1 class="text-3xl font-bold gradient-text mb-2">AGRICODE</h1>
+                <p class="text-gray-600" data-lang="welcome">مرحباً بك في عالم الزراعة الرقمية</p>
+            </div>
+            
+            <form id="loginForm">
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2" data-lang="enterName">أدخل اسمك</label>
+                    <input type="text" id="userName" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-primary-color focus:outline-none transition" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary w-full">
+                    <span data-lang="enter">دخول</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- المحتوى الرئيسي -->
+    <div id="mainContent" style="display: none;">
+        <!-- صفحة الرئيسية -->
+        <div class="page active" id="homePage">
+            <div class="mb-6 flex justify-between items-center">
+                <h1 class="text-2xl font-bold">
+                    <span data-lang="welcomeUser">مرحباً،</span> 
+                    <span id="displayUserName" class="gradient-text"></span>
+                </h1>
+                <button onclick="showPage('settingsPage')" class="icon-box">
+                    <i class="fas fa-cog"></i>
+                </button>
+            </div>
+
+            <!-- قسم تعريف الشركة -->
+            <div class="card" data-aos="fade-up">
+                <div class="text-center">
+                    <div class="icon-box mx-auto mb-4" style="width: 80px; height: 80px;">
+                        <i class="fas fa-seedling text-3xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold mb-2 gradient-text">AGRICODE</h2>
+                    <p class="text-gray-600" data-lang="companyDesc">منصة رقمية متكاملة للزراعة الحديثة</p>
+                </div>
+            </div>
+
+            <!-- قسم الخدمات -->
+            <div class="mt-8">
+                <h2 class="text-xl font-bold mb-4" data-lang="services">خدماتنا</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="card" data-aos="fade-up" data-aos-delay="100">
+                        <div class="icon-box">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <h3 class="font-bold mb-2" data-lang="cropTracking">متابعة المحاصيل</h3>
+                        <p class="text-sm text-gray-600" data-lang="cropTrackingDesc">فريق من المهندسين لمتابعة محاصيلك واستشارات اونلاين</p>
+                    </div>
+                    
+                    <div class="card" data-aos="fade-up" data-aos-delay="200">
+                        <div class="icon-box">
+                            <i class="fas fa-recycle"></i>
+                        </div>
+                        <h3 class="font-bold mb-2" data-lang="wasteRecycling">تدوير المخلفات</h3>
+                        <p class="text-sm text-gray-600" data-lang="wasteRecyclingDesc">وسيط بين المزارعين وشركات التدوير</p>
+                    </div>
+                    
+                    <div class="card" data-aos="fade-up" data-aos-delay="300">
+                        <div class="icon-box">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h3 class="font-bold mb-2" data-lang="aiService">الذكاء الاصطناعي</h3>
+                        <p class="text-sm text-gray-600" data-lang="aiServiceDesc">مساعد شخصي ذكي للمزارعين</p>
+                    </div>
+                    
+                    <div class="card" data-aos="fade-up" data-aos-delay="400">
+                        <div class="icon-box">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <h3 class="font-bold mb-2" data-lang="marketing">التسويق وبيع المنتجات</h3>
+                        <p class="text-sm text-gray-600" data-lang="marketingDesc">منصة لبيع منتجات المزارعين</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- قسم المميزات -->
+            <div class="mt-8">
+                <h2 class="text-xl font-bold mb-4" data-lang="features">مميزاتنا</h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="card text-center" data-aos="zoom-in" data-aos-delay="100">
+                        <i class="fas fa-brain text-2xl text-primary-color mb-2"></i>
+                        <p class="text-sm" data-lang="feature1">الذكاء الاصطناعي</p>
+                    </div>
+                    <div class="card text-center" data-aos="zoom-in" data-aos-delay="200">
+                        <i class="fas fa-wifi text-2xl text-primary-color mb-2"></i>
+                        <p class="text-sm" data-lang="feature2">إنترنت الأشياء</p>
+                    </div>
+                    <div class="card text-center" data-aos="zoom-in" data-aos-delay="300">
+                        <i class="fas fa-book text-2xl text-primary-color mb-2"></i>
+                        <p class="text-sm" data-lang="feature3">مكتبة شاملة</p>
+                    </div>
+                    <div class="card text-center" data-aos="zoom-in" data-aos-delay="400">
+                        <i class="fas fa-users text-2xl text-primary-color mb-2"></i>
+                        <p class="text-sm" data-lang="feature4">دعم فني</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- معلومات الاتصال -->
+            <div class="mt-8 card" data-aos="fade-up">
+                <h2 class="text-xl font-bold mb-4" data-lang="contact">معلومات الاتصال</h2>
+                <div class="space-y-2">
+                    <p><i class="fas fa-phone text-primary-color ml-2"></i> 01501021670</p>
+                    <p><i class="fas fa-envelope text-primary-color ml-2"></i> info@agricode.com</p>
+                    <p><i class="fas fa-map-marker-alt text-primary-color ml-2"></i> <span data-lang="location">المنصورة، مصر</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- صفحة متابعة المحاصيل -->
+        <div class="page" id="cropPage">
+            <button class="back-btn" onclick="showPage('homePage')">
+                <i class="fas fa-arrow-right"></i>
+            </button>
+            <div class="mb-6">
+                <h1 class="text-2xl font-bold" data-lang="cropTracking">متابعة المحاصيل</h1>
+            </div>
+
+            <div class="card" data-aos="fade-up">
+                <h2 class="text-xl font-bold mb-4" data-lang="cropTrackingTitle">خدمة متابعة المحاصيل</h2>
+                <p class="text-gray-600 mb-6" data-lang="cropTrackingDescFull">
+                    نقدم خدمة متابعة المحاصيل بواسطة فريق من المهندسين الزراعيين ذوي الخبرة العالية. 
+                    يقوم الفريق بزيارات دورية للمزرعة وتقديم استشارات فورية اونلاين لضمان أفضل نتائج لمحاصيلك.
+                </p>
+                
+                <button onclick="navigateToService('crop-tracking')" class="btn btn-primary w-full">
+                    <span data-lang="startTracking">ابدأ المتابعة الآن</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- صفحة تدوير المخلفات -->
+        <div class="page" id="recyclingPage">
+            <button class="back-btn" onclick="showPage('homePage')">
+                <i class="fas fa-arrow-right"></i>
+            </button>
+            <div class="mb-6">
+                <h1 class="text-2xl font-bold" data-lang="wasteRecycling">تدوير المخلفات</h1>
+            </div>
+
+            <div class="card" data-aos="fade-up">
+                <h2 class="text-xl font-bold mb-4" data-lang="recyclingTitle">خدمة تدوير المخلفات الزراعية</h2>
+                <p class="text-gray-600 mb-6" data-lang="recyclingDescFull">
+                    نعمل كوسيط بين المزارعين وشركات ومصانع التدوير المتخصصة. 
+                    نساعدك في تحويل مخلفاتك الزراعية إلى مصدر دخل إضافي والمساهمة في حماية البيئة.
+                </p>
+                
+                <button onclick="navigateToService('waste-recycling')" class="btn btn-primary w-full">
+                    <span data-lang="startRecycling">ابدأ التدوير الآن</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- صفحة الذكاء الاصطناعي -->
+        <div class="page" id="aiPage">
+            <button class="back-btn" onclick="showPage('homePage')">
+                <i class="fas fa-arrow-right"></i>
+            </button>
+            <div class="mb-6">
+                <h1 class="text-2xl font-bold" data-lang="aiService">الذكاء الاصطناعي</h1>
+            </div>
+
+            <div class="card" data-aos="fade-up">
+                <h2 class="text-xl font-bold mb-4" data-lang="aiTitle">مساعدك الذكي الزراعي</h2>
+                <p class="text-gray-600 mb-6" data-lang="aiDescFull">
+                    استخدم أحدث تقنيات الذكاء الاصطناعي للحصول على نصائح وتوصيات مخصصة لمحاصيلك. 
+                    المساعد الذكي متاح على مدار الساعة لمساعدتك في جميع مراحل الزراعة.
+                </p>
+                
+                <div class="dropdown">
+                    <select id="cropSelect" onchange="updateCropButton()">
+                        <option value="" data-lang="selectCrop">اختر المحصول</option>
+                        <option value="wheat">القمح</option>
+                        <option value="rice">الأرز</option>
+                        <option value="corn">الذرة</option>
+                        <option value="tomato">الطماطم</option>
+                        <option value="potato">البطاطس</option>
+                    </select>
+                </div>
+                
+                <button id="cropButton" onclick="navigateToAI()" class="btn btn-primary w-full mt-4" disabled>
+                    <span data-lang="selectCropFirst">اختر المحصول أولاً</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- صفحة الإعدادات -->
+        <div class="page" id="settingsPage">
+            <button class="back-btn" onclick="showPage('homePage')">
+                <i class="fas fa-arrow-right"></i>
+            </button>
+            <div class="mb-6">
+                <h1 class="text-2xl font-bold" data-lang="settings">الإعدادات</h1>
+            </div>
+
+            <!-- تعديل اسم المستخدم -->
+            <div class="card mb-4" data-aos="fade-up">
+                <h3 class="font-bold mb-3" data-lang="editName">تعديل اسم المستخدم</h3>
+                <div class="flex gap-2">
+                    <input type="text" id="newUserName" class="flex-1 px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-primary-color focus:outline-none" placeholder="الاسم الجديد">
+                    <button onclick="updateUserName()" class="btn btn-primary">
+                        <span data-lang="save">حفظ</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- تغيير اللغة -->
+            <div class="card mb-4" data-aos="fade-up" data-aos-delay="100">
+                <h3 class="font-bold mb-3" data-lang="changeLang">تغيير اللغة</h3>
+                <div class="flex gap-2">
+                    <button onclick="changeLanguage('ar')" class="btn btn-secondary flex-1">العربية</button>
+                    <button onclick="changeLanguage('en')" class="btn btn-secondary flex-1">English</button>
+                </div>
+            </div>
+
+            <!-- الخدمات الأخرى -->
+            <div class="card mb-4" data-aos="fade-up" data-aos-delay="200">
+                <h3 class="font-bold mb-3" data-lang="otherServices">خدمات أخرى</h3>
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="showPage('consultationPage')" class="card text-center hover:bg-gray-50">
+                        <i class="fas fa-comments text-2xl text-primary-color mb-2"></i>
+                        <p class="text-sm" data-lang="onlineConsultation">استشارة اونلاين</p>
+                    </button>
+                    <button onclick="showPage('sellPage')" class="card text-center hover:bg-gray-50">
+                        <i class="fas fa-store text-2xl text-primary-color mb-2"></i>
+                        <p class="text-sm" data-lang="sellProduct">بيع منتج</p>
+                    </button>
+                    <button onclick="showPage('productsPage')" class="card text-center hover:bg-gray-50">
+                        <i class="fas fa-box text-2xl text-primary-color mb-2"></i>
+                        <p class="text-sm" data-lang="ourProducts">منتجاتنا</p>
+                    </button>
+                    <button onclick="showPage('iotPage')" class="card text-center hover:bg-gray-50">
+                        <i class="fas fa-microchip text-2xl text-primary-color mb-2"></i>
+                        <p class="text-sm" data-lang="iot">إنترنت الأشياء</p>
+                    </button>
+                    <button onclick="showPage('libraryPage')" class="card text-center hover:bg-gray-50">
+                        <i class="fas fa-book-open text-2xl text-primary-color mb-2"></i>
+                        <p class="text-sm" data-lang="library">المكتبة الشاملة</p>
+                    </button>
+                    <button onclick="showPage('interactiveLibraryPage')" class="card text-center hover:bg-gray-50">
+                        <i class="fas fa-seedling text-2xl text-primary-color mb-2"></i>
+                        <p class="text-sm" data-lang="interactiveLibrary">مكتبة تفاعلية</p>
+                    </button>
+                </div>
+            </div>
+
+            <!-- معلومات التطبيق -->
+            <div class="card mb-4" data-aos="fade-up" data-aos-delay="300">
+                <h3 class="font-bold mb-3" data-lang="appInfo">معلومات التطبيق</h3>
+                <div class="space-y-2 text-sm">
+                    <p><span data-lang="developer">المطور:</span> AGRICODE Team</p>
+                    <p><span data-lang="version">الإصدار:</span> 1.0.0</p>
+                </div>
+            </div>
+
+            <!-- الخروج -->
+            <div class="space-y-2" data-aos="fade-up" data-aos-delay="400">
+                <button onclick="deleteAccount()" class="btn bg-red-500 text-white w-full hover:bg-red-600">
+                    <span data-lang="deleteAccount">حذف الحساب</span>
+                </button>
+                <button onclick="logout()" class="btn bg-gray-500 text-white w-full hover:bg-gray-600">
+                    <span data-lang="logout">الخروج من التطبيق</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- صفحة الاستشارة الأونلاين -->
+        <div class="page" id="consultationPage">
+            <button class="back-btn" onclick="showPage('settingsPage')">
+                <i class="fas fa-arrow-right"></i>
+            </button>
+            <div class="mb-6">
+                <h1 class="text-2xl font-bold" data-lang="onlineConsultation">استشارة اونلاين</h1>
+            </div>
+
+            <div class="card" data-aos="fade-up">
+                <h2 class="text-xl font-bold mb-4" data-lang="consultationTitle">خدمة الاستشارة الأونلاين</h2>
+                <p class="text-gray-600 mb-6" data-lang="consultationDescFull">
+                    احصل على استشارات فورية من مهندسين زراعيين متخصصين. 
+                    نقدم حلولاً لمشاكلك الزراعية عبر الدردشة المباشرة أو الفيديو.
+                </p>
+                
+                <button onclick="startConsultation()" class="btn btn-primary w-full">
+                    <span data-lang="startConsultation">ابدأ الاستشارة الآن</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- صفحة بيع منتج -->
+        <div class="page" id="sellPage">
+            <button class="back-btn" onclick="showPage('settingsPage')">
+                <i class="fas fa-arrow-right"></i>
+            </button>
+            <div class="mb-6">
+                <h1 class="text-2xl font-bold" data-lang="sellProduct">بيع منتج</h1>
+            </div>
+
+            <div class="card" data-aos="fade-up">
+                <h2 class="text-xl font-bold mb-4" data-lang="sellTitle">بيع منتجاتك الزراعية</h2>
+                <p class="text-gray-600 mb-6" data-lang="sellDescFull">
+                    سجل منتجاتك الزراعية على منصتنا ووصل إلى آلاف المشترين. 
+                    نحن نساعدك في التسويق والتوصيل والحصول على أفضل الأسعار.
+                </p>
+                
+                <button onclick="startSelling()" class="btn btn-primary w-full">
+                    <span data-lang="startSelling">ابدأ البيع الآن</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- صفحة منتجاتنا -->
+        <div class="page" id="productsPage">
+            <button class="back-btn" onclick="showPage('settingsPage')">
+                <i class="fas fa-arrow-right"></i>
+            </button>
+            <div class="mb-6">
+                <h1 class="text-2xl font-bold" data-lang="ourProducts">منتجاتنا</h1>
+            </div>
+
+            <div class="card" data-aos="fade-up">
+                <h2 class="text-xl font-bold mb-4" data-lang="productsTitle">منتجات AGRICODE</h2>
+                <p class="text-gray-600 mb-6" data-lang="productsDescFull">
+                    نقدم مجموعة متنوعة من المنتجات الزراعية العضوية والمعتمدة. 
+                    جميع منتجاتنا تخضع لجودة عالية وفحص دقيق قبل عرضها.
+                </p>
+                
+                <button onclick="viewProducts()" class="btn btn-primary w-full">
+                    <span data-lang="viewProducts">عرض المنتجات</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- صفحة إنترنت الأشياء -->
+        <div class="page" id="iotPage">
+            <button class="back-btn" onclick="showPage('settingsPage')">
+                <i class="fas fa-arrow-right"></i>
+            </button>
+            <div class="mb-6">
+                <h1 class="text-2xl font-bold" data-lang="iot">إنترنت الأشياء</h1>
+            </div>
+
+            <div class="card" data-aos="fade-up">
+                <h2 class="text-xl font-bold mb-4" data-lang="iotTitle">خدمة إنترنت الأشياء</h2>
+                <p class="text-gray-600 mb-6" data-lang="iotDescFull">
+                    خدمة إنترنت الأشياء للمزارع قيد التطوير حالياً. 
+                    ستتوفر قريباً أجهزة ذكية لمراقبة المحاصيل والتربة والطقس.
+                </p>
+                
+                <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded-lg">
+                    <p class="font-bold" data-lang="comingSoon">قريباً!</p>
+                    <p class="text-sm" data-lang="iotComingSoon">الخدمة قيد التطوير وستتوفر قريباً</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- صفحة المكتبة الشاملة -->
+        <div class="page" id="libraryPage">
+            <button class="back-btn" onclick="showPage('settingsPage')">
+                <i class="fas fa-arrow-right"></i>
+            </button>
+            <div class="mb-6">
+                <h1 class="text-2xl font-bold" data-lang="library">المكتبة الشاملة</h1>
+            </div>
+
+            <div class="card" data-aos="fade-up">
+                <h2 class="text-xl font-bold mb-4" data-lang="libraryTitle">المكتبة الزراعية الشاملة</h2>
+                <p class="text-gray-600 mb-6" data-lang="libraryDescFull">
+                    اطلع على آلاف المقالات والدراسات الزراعية المتخصصة. 
+                    مكتبتنا تحتوي على معلومات شاملة عن جميع المحاصيل والتقنيات الزراعية.
+                </p>
+                
+                <button onclick="openLibrary()" class="btn btn-primary w-full">
+                    <span data-lang="openLibrary">فتح المكتبة</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- صفحة المكتبة التفاعلية -->
+        <div class="page" id="interactiveLibraryPage">
+            <button class="back-btn" onclick="showPage('settingsPage')">
+                <i class="fas fa-arrow-right"></i>
+            </button>
+            <div class="mb-6">
+                <h1 class="text-2xl font-bold" data-lang="interactiveLibrary">مكتبة تفاعلية حسب المحصول</h1>
+            </div>
+
+            <div class="card" data-aos="fade-up">
+                <h2 class="text-xl font-bold mb-4" data-lang="interactiveLibraryTitle">مكتبة المحاصيل التفاعلية</h2>
+                <p class="text-gray-600 mb-6" data-lang="interactiveLibraryDesc">
+                    اختر المحصول الذي تريد معرفة المزيد عنه. ستجد معلومات تفصيلية ونصائح زراعية مخصصة لكل محصول.
+                </p>
+                
+                <div class="dropdown">
+                    <select id="libraryCropSelect" onchange="updateLibraryButton()">
+                        <option value="" data-lang="selectCrop">اختر المحصول</option>
+                        <option value="wheat">القمح</option>
+                        <option value="rice">الأرز</option>
+                        <option value="corn">الذرة</option>
+                        <option value="tomato">الطماطم</option>
+                        <option value="potato">البطاطس</option>
+                    </select>
+                </div>
+                
+                <button id="libraryButton" onclick="navigateToLibrary()" class="btn btn-primary w-full mt-4" disabled>
+                    <span data-lang="selectCropFirst">اختر المحصول أولاً</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- شريط التنقل السفلي -->
+        <div class="bottom-nav">
+            <div class="flex justify-around">
+                <div class="nav-item active" onclick="showPage('homePage')">
+                    <i class="fas fa-home text-xl mb-1"></i>
+                    <span class="text-xs" data-lang="home">الرئيسية</span>
+                </div>
+                <div class="nav-item" onclick="showPage('cropPage')">
+                    <i class="fas fa-eye text-xl mb-1"></i>
+                    <span class="text-xs" data-lang="crops">المحاصيل</span>
+                </div>
+                <div class="nav-item" onclick="showPage('recyclingPage')">
+                    <i class="fas fa-recycle text-xl mb-1"></i>
+                    <span class="text-xs" data-lang="recycling">التدوير</span>
+                </div>
+                <div class="nav-item" onclick="showPage('aiPage')">
+                    <i class="fas fa-robot text-xl mb-1"></i>
+                    <span class="text-xs" data-lang="ai">الذكاء</span>
+                </div>
+                <div class="nav-item" onclick="showPage('settingsPage')">
+                    <i class="fas fa-cog text-xl mb-1"></i>
+                    <span class="text-xs" data-lang="settings">الإعدادات</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // تهيئة المكتبات
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+
+        const notyf = new Notyf({
+            duration: 3000,
+            position: {
+                x: 'center',
+                y: 'top'
+            },
+            types: [
+                {
+                    type: 'success',
+                    background: '#22c55e',
+                    icon: {
+                        className: 'fas fa-check-circle',
+                        tagName: 'i',
+                        color: 'white'
+                    }
+                },
+                {
+                    type: 'error',
+                    background: '#ef4444',
+                    icon: {
+                        className: 'fas fa-times-circle',
+                        tagName: 'i',
+                        color: 'white'
+                    }
+                }
+            ]
+        });
+
+        // متغيرات عامة
+        let currentUser = localStorage.getItem('agricode_user') || '';
+        let currentLang = localStorage.getItem('agricode_lang') || 'ar';
+
+        // الترجمات
+        const translations = {
+            ar: {
+                welcome: 'مرحباً بك في عالم الزراعة الرقمية',
+                enterName: 'أدخل اسمك',
+                enter: 'دخول',
+                welcomeUser: 'مرحباً،',
+                companyDesc: 'منصة رقمية متكاملة للزراعة الحديثة',
+                services: 'خدماتنا',
+                cropTracking: 'متابعة المحاصيل',
+                cropTrackingDesc: 'فريق من المهندسين لمتابعة محاصيلك واستشارات اونلاين',
+                wasteRecycling: 'تدوير المخلفات',
+                wasteRecyclingDesc: 'وسيط بين المزارعين وشركات التدوير',
+                aiService: 'الذكاء الاصطناعي',
+                aiServiceDesc: 'مساعد شخصي ذكي للمزارعين',
+                marketing: 'التسويق وبيع المنتجات',
+                marketingDesc: 'منصة لبيع منتجات المزارعين',
+                features: 'مميزاتنا',
+                feature1: 'الذكاء الاصطناعي',
+                feature2: 'إنترنت الأشياء',
+                feature3: 'مكتبة شاملة',
+                feature4: 'دعم فني',
+                contact: 'معلومات الاتصال',
+                location: 'المنصورة، مصر',
+                cropTrackingTitle: 'خدمة متابعة المحاصيل',
+                cropTrackingDescFull: 'نقدم خدمة متابعة المحاصيل بواسطة فريق من المهندسين الزراعيين ذوي الخبرة العالية. يقوم الفريق بزيارات دورية للمزرعة وتقديم استشارات فورية اونلاين لضمان أفضل نتائج لمحاصيلك.',
+                startTracking: 'ابدأ المتابعة الآن',
+                recyclingTitle: 'خدمة تدوير المخلفات الزراعية',
+                recyclingDescFull: 'نعمل كوسيط بين المزارعين وشركات ومصانع التدوير المتخصصة. نساعدك في تحويل مخلفاتك الزراعية إلى مصدر دخل إضافي والمساهمة في حماية البيئة.',
+                startRecycling: 'ابدأ التدوير الآن',
+                aiTitle: 'مساعدك الذكي الزراعي',
+                aiDescFull: 'استخدم أحدث تقنيات الذكاء الاصطناعي للحصول على نصائح وتوصيات مخصصة لمحاصيلك. المساعد الذكي متاح على مدار الساعة لمساعدتك في جميع مراحل الزراعة.',
+                selectCrop: 'اختر المحصول',
+                selectCropFirst: 'اختر المحصول أولاً',
+                settings: 'الإعدادات',
+                editName: 'تعديل اسم المستخدم',
+                save: 'حفظ',
+                changeLang: 'تغيير اللغة',
+                otherServices: 'خدمات أخرى',
+                onlineConsultation: 'استشارة اونلاين',
+                sellProduct: 'بيع منتج',
+                ourProducts: 'منتجاتنا',
+                iot: 'إنترنت الأشياء',
+                library: 'المكتبة الشاملة',
+                interactiveLibrary: 'مكتبة تفاعلية',
+                appInfo: 'معلومات التطبيق',
+                developer: 'المطور:',
+                version: 'الإصدار:',
+                deleteAccount: 'حذف الحساب',
+                logout: 'الخروج من التطبيق',
+                interactiveLibraryTitle: 'مكتبة المحاصيل التفاعلية',
+                interactiveLibraryDesc: 'اختر المحصول الذي تريد معرفة المزيد عنه. ستجد معلومات تفصيلية ونصائح زراعية مخصصة لكل محصول.',
+                home: 'الرئيسية',
+                crops: 'المحاصيل',
+                recycling: 'التدوير',
+                ai: 'الذكاء',
+                nameUpdated: 'تم تحديث الاسم بنجاح',
+                accountDeleted: 'تم حذف الحساب بنجاح',
+                confirmDelete: 'هل أنت متأكد من حذف حسابك؟',
+                confirmLogout: 'هل أنت متأكد من الخروج؟',
+                serviceNotAvailable: 'الخدمة غير متوفرة حالياً',
+                iotComingSoon: 'خدمة إنترنت الأشياء قيد التطوير وستتوفر قريباً',
+                consultationTitle: 'خدمة الاستشارة الأونلاين',
+                consultationDescFull: 'احصل على استشارات فورية من مهندسين زراعيين متخصصين. نقدم حلولاً لمشاكلك الزراعية عبر الدردشة المباشرة أو الفيديو.',
+                startConsultation: 'ابدأ الاستشارة الآن',
+                sellTitle: 'بيع منتجاتك الزراعية',
+                sellDescFull: 'سجل منتجاتك الزراعية على منصتنا ووصل إلى آلاف المشترين. نحن نساعدك في التسويق والتوصيل والحصول على أفضل الأسعار.',
+                startSelling: 'ابدأ البيع الآن',
+                productsTitle: 'منتجات AGRICODE',
+                productsDescFull: 'نقدم مجموعة متنوعة من المنتجات الزراعية العضوية والمعتمدة. جميع منتجاتنا تخضع لجودة عالية وفحص دقيق قبل عرضها.',
+                viewProducts: 'عرض المنتجات',
+                iotTitle: 'خدمة إنترنت الأشياء',
+                iotDescFull: 'خدمة إنترنت الأشياء للمزارع قيد التطوير حالياً. ستتوفر قريباً أجهزة ذكية لمراقبة المحاصيل والتربة والطقس.',
+                comingSoon: 'قريباً!',
+                libraryTitle: 'المكتبة الزراعية الشاملة',
+                libraryDescFull: 'اطلع على آلاف المقالات والدراسات الزراعية المتخصصة. مكتبتنا تحتوي على معلومات شاملة عن جميع المحاصيل والتقنيات الزراعية.',
+                openLibrary: 'فتح المكتبة',
+                cancel: 'إلغاء',
+                delete: 'حذف',
+                exit: 'خروج',
+                actionCannotBeUndone: 'هذا الإجراء لا يمكن التراجع عنه',
+                doYouWantToLogout: 'هل تريد الخروج من التطبيق؟'
+            },
+            en: {
+                welcome: 'Welcome to the world of digital agriculture',
+                enterName: 'Enter your name',
+                enter: 'Enter',
+                welcomeUser: 'Welcome,',
+                companyDesc: 'Integrated digital platform for modern agriculture',
+                services: 'Our Services',
+                cropTracking: 'Crop Tracking',
+                cropTrackingDesc: 'Team of engineers for crop tracking and online consultations',
+                wasteRecycling: 'Waste Recycling',
+                wasteRecyclingDesc: 'Mediator between farmers and recycling companies',
+                aiService: 'Artificial Intelligence',
+                aiServiceDesc: 'Personal smart assistant for farmers',
+                marketing: 'Marketing & Product Sales',
+                marketingDesc: 'Platform for selling farmers\' products',
+                features: 'Our Features',
+                feature1: 'Artificial Intelligence',
+                feature2: 'Internet of Things',
+                feature3: 'Comprehensive Library',
+                feature4: 'Technical Support',
+                contact: 'Contact Information',
+                location: 'Mansoura, Egypt',
+                cropTrackingTitle: 'Crop Tracking Service',
+                cropTrackingDescFull: 'We offer crop tracking service through a team of highly experienced agricultural engineers. The team conducts regular farm visits and provides instant online consultations to ensure the best results for your crops.',
+                startTracking: 'Start Tracking Now',
+                recyclingTitle: 'Agricultural Waste Recycling Service',
+                recyclingDescFull: 'We act as a mediator between farmers and specialized recycling companies and factories. We help you convert your agricultural waste into an additional source of income and contribute to environmental protection.',
+                startRecycling: 'Start Recycling Now',
+                aiTitle: 'Your Smart Agricultural Assistant',
+                aiDescFull: 'Use the latest artificial intelligence technologies to get personalized advice and recommendations for your crops. The smart assistant is available 24/7 to help you in all stages of agriculture.',
+                selectCrop: 'Select Crop',
+                selectCropFirst: 'Select crop first',
+                settings: 'Settings',
+                editName: 'Edit Username',
+                save: 'Save',
+                changeLang: 'Change Language',
+                otherServices: 'Other Services',
+                onlineConsultation: 'Online Consultation',
+                sellProduct: 'Sell Product',
+                ourProducts: 'Our Products',
+                iot: 'Internet of Things',
+                library: 'Comprehensive Library',
+                interactiveLibrary: 'Interactive Library',
+                appInfo: 'App Information',
+                developer: 'Developer:',
+                version: 'Version:',
+                deleteAccount: 'Delete Account',
+                logout: 'Logout',
+                interactiveLibraryTitle: 'Interactive Crop Library',
+                interactiveLibraryDesc: 'Choose the crop you want to know more about. You will find detailed information and customized agricultural tips for each crop.',
+                home: 'Home',
+                crops: 'Crops',
+                recycling: 'Recycling',
+                ai: 'AI',
+                nameUpdated: 'Name updated successfully',
+                accountDeleted: 'Account deleted successfully',
+                confirmDelete: 'Are you sure you want to delete your account?',
+                confirmLogout: 'Are you sure you want to logout?',
+                serviceNotAvailable: 'Service not available at the moment',
+                iotComingSoon: 'IoT service is under development and will be available soon',
+                consultationTitle: 'Online Consultation Service',
+                consultationDescFull: 'Get instant consultations from specialized agricultural engineers. We provide solutions to your agricultural problems through live chat or video.',
+                startConsultation: 'Start Consultation Now',
+                sellTitle: 'Sell Your Agricultural Products',
+                sellDescFull: 'Register your agricultural products on our platform and reach thousands of buyers. We help you with marketing, delivery and getting the best prices.',
+                startSelling: 'Start Selling Now',
+                productsTitle: 'AGRICODE Products',
+                productsDescFull: 'We offer a variety of organic and certified agricultural products. All our products undergo high quality and careful inspection before being displayed.',
+                viewProducts: 'View Products',
+                iotTitle: 'Internet of Things Service',
+                iotDescFull: 'IoT service for farms is currently under development. Smart devices for monitoring crops, soil and weather will be available soon.',
+                comingSoon: 'Coming Soon!',
+                libraryTitle: 'Comprehensive Agricultural Library',
+                libraryDescFull: 'Browse thousands of specialized agricultural articles and studies. Our library contains comprehensive information about all crops and agricultural techniques.',
+                openLibrary: 'Open Library',
+                cancel: 'Cancel',
+                delete: 'Delete',
+                exit: 'Logout',
+                actionCannotBeUndone: 'This action cannot be undone',
+                doYouWantToLogout: 'Do you want to logout?'
+            }
+        };
+
+        // دالة تحديث اللغة
+        function changeLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('agricode_lang', lang);
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+            updateTranslations();
+        }
+
+        // دالة تحديث الترجمات
+        function updateTranslations() {
+            document.querySelectorAll('[data-lang]').forEach(element => {
+                const key = element.getAttribute('data-lang');
+                if (translations[currentLang][key]) {
+                    element.textContent = translations[currentLang][key];
+                }
+            });
+            
+            // تحديث خيارات القائمة المنسدلة
+            const selects = document.querySelectorAll('select');
+            selects.forEach(select => {
+                Array.from(select.options).forEach(option => {
+                    if (option.getAttribute('data-lang')) {
+                        const key = option.getAttribute('data-lang');
+                        if (translations[currentLang][key]) {
+                            option.textContent = translations[currentLang][key];
+                        }
+                    }
+                });
+            });
+        }
+
+        // دالة عرض الصفحة
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+            
+            // تحديث شريط التنقل
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // إضافة تأثير الحركة
+            const page = document.getElementById(pageId);
+            page.classList.add('fade-in');
+            setTimeout(() => page.classList.remove('fade-in'), 500);
+            
+            // تحديث الأنيميشن
+            AOS.refresh();
+        }
+
+        // دالة تسجيل الدخول
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const userName = document.getElementById('userName').value.trim();
+            if (userName) {
+                currentUser = userName;
+                localStorage.setItem('agricode_user', userName);
+                document.getElementById('displayUserName').textContent = userName;
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+                notyf.success(currentLang === 'ar' ? 'مرحباً بك!' : 'Welcome!');
+                AOS.refresh();
+            }
+        });
+
+        // دالة تحديث اسم المستخدم
+        function updateUserName() {
+            const newName = document.getElementById('newUserName').value.trim();
+            if (newName) {
+                currentUser = newName;
+                localStorage.setItem('agricode_user', newName);
+                document.getElementById('displayUserName').textContent = newName;
+                document.getElementById('newUserName').value = '';
+                notyf.success(translations[currentLang].nameUpdated);
+            }
+        }
+
+        // دالة تحديث زر المحصول في صفحة الذكاء الاصطناعي
+        function updateCropButton() {
+            const select = document.getElementById('cropSelect');
+            const button = document.getElementById('cropButton');
+            const selectedCrop = select.value;
+            
+            if (selectedCrop) {
+                button.disabled = false;
+                const cropNames = {
+                    wheat: currentLang === 'ar' ? 'القمح' : 'Wheat',
+                    rice: currentLang === 'ar' ? 'الأرز' : 'Rice',
+                    corn: currentLang === 'ar' ? 'الذرة' : 'Corn',
+                    tomato: currentLang === 'ar' ? 'الطماطم' : 'Tomato',
+                    potato: currentLang === 'ar' ? 'البطاطس' : 'Potato'
+                };
+                button.innerHTML = `<span>${cropNames[selectedCrop]}</span>`;
+            } else {
+                button.disabled = true;
+                button.innerHTML = `<span>${translations[currentLang].selectCropFirst}</span>`;
+            }
+        }
+
+        // دالة تحديث زر المحصول في صفحة المكتبة التفاعلية
+        function updateLibraryButton() {
+            const select = document.getElementById('libraryCropSelect');
+            const button = document.getElementById('libraryButton');
+            const selectedCrop = select.value;
+            
+            if (selectedCrop) {
+                button.disabled = false;
+                const cropNames = {
+                    wheat: currentLang === 'ar' ? 'القمح' : 'Wheat',
+                    rice: currentLang === 'ar' ? 'الأرز' : 'Rice',
+                    corn: currentLang === 'ar' ? 'الذرة' : 'Corn',
+                    tomato: currentLang === 'ar' ? 'الطماطم' : 'Tomato',
+                    potato: currentLang === 'ar' ? 'البطاطس' : 'Potato'
+                };
+                button.innerHTML = `<span>${cropNames[selectedCrop]}</span>`;
+            } else {
+                button.disabled = true;
+                button.innerHTML = `<span>${translations[currentLang].selectCropFirst}</span>`;
+            }
+        }
+
+        // دالة التنقل لخدمة متابعة المحاصيل
+        function navigateToService(service) {
+            notyf.success(currentLang === 'ar' ? 'جاري التحميل...' : 'Loading...');
+            setTimeout(() => {
+                // هنا يتم فتح الرابط الفعلي للخدمة
+                const urls = {
+                    'crop-tracking': 'https://googal.com',
+                    'waste-recycling': 'https://agricode.com'
+                };
+                if (urls[service]) {
+                    // فتح الرابط في نافذة جديدة
+                    window.open(urls[service], '_blank');
+                    notyf.success(currentLang === 'ar' ? 'تم فتح الخدمة' : 'Service opened');
+                }
+            }, 1000);
+        }
+
+        // دالة التنقل لخدمة الذكاء الاصطناعي
+        function navigateToAI() {
+            const crop = document.getElementById('cropSelect').value;
+            if (crop) {
+                notyf.success(currentLang === 'ar' ? 'جاري التحميل...' : 'Loading...');
+                setTimeout(() => {
+                    // هنا يتم فتح الرابط الفعلي للمساعد الذكي
+                    const urls = {
+                        wheat: 'https://agricode.com/ai/wheat',
+                        rice: 'https://agricode.com/ai/rice',
+                        corn: 'https://agricode.com/ai/corn',
+                        tomato: 'https://agricode.com/ai/tomato',
+                        potato: 'https://agricode.com/ai/potato'
+                    };
+                    if (urls[crop]) {
+                        // فتح الرابط في نافذة جديدة
+                        window.open(urls[crop], '_blank');
+                        notyf.success(currentLang === 'ar' ? 'تم فتح مساعد الذكاء الاصطناعي' : 'AI Assistant opened');
+                    }
+                }, 1000);
+            }
+        }
+
+        // دالة التنقل للمكتبة التفاعلية
+        function navigateToLibrary() {
+            const crop = document.getElementById('libraryCropSelect').value;
+            if (crop) {
+                notyf.success(currentLang === 'ar' ? 'جاري التحميل...' : 'Loading...');
+                setTimeout(() => {
+                    // هنا يتم فتح الرابط الفعلي للمكتبة
+                    const urls = {
+                        wheat: 'https://agricode.com/library/wheat',
+                        rice: 'https://agricode.com/library/rice',
+                        corn: 'https://agricode.com/library/corn',
+                        tomato: 'https://agricode.com/library/tomato',
+                        potato: 'https://agricode.com/library/potato'
+                    };
+                    if (urls[crop]) {
+                        // فتح الرابط في نافذة جديدة
+                        window.open(urls[crop], '_blank');
+                        notyf.success(currentLang === 'ar' ? 'تم فتح المكتبة التفاعلية' : 'Interactive Library opened');
+                    }
+                }, 1000);
+            }
+        }
+
+        // دوال الخدمات الأخرى
+        function startConsultation() {
+            notyf.success(currentLang === 'ar' ? 'جاري التحميل...' : 'Loading...');
+            setTimeout(() => {
+                // فتح الرابط في نافذة جديدة
+                window.open('https://agricode.com/consultation', '_blank');
+                notyf.success(currentLang === 'ar' ? 'تم فتح الاستشارة الأونلاين' : 'Online Consultation opened');
+            }, 1000);
+        }
+
+        function startSelling() {
+            notyf.success(currentLang === 'ar' ? 'جاري التحميل...' : 'Loading...');
+            setTimeout(() => {
+                // فتح الرابط في نافذة جديدة
+                window.open('https://agricode.com/sell', '_blank');
+                notyf.success(currentLang === 'ar' ? 'تم فتح صفحة البيع' : 'Selling page opened');
+            }, 1000);
+        }
+
+        function viewProducts() {
+            notyf.success(currentLang === 'ar' ? 'جاري التحميل...' : 'Loading...');
+            setTimeout(() => {
+                // فتح الرابط في نافذة جديدة
+                window.open('https://agricode.com/products', '_blank');
+                notyf.success(currentLang === 'ar' ? 'تم فتح صفحة المنتجات' : 'Products page opened');
+            }, 1000);
+        }
+
+        function openLibrary() {
+            notyf.success(currentLang === 'ar' ? 'جاري التحميل...' : 'Loading...');
+            setTimeout(() => {
+                // فتح الرابط في نافذة جديدة
+                window.open('https://agricode.com/library', '_blank');
+                notyf.success(currentLang === 'ar' ? 'تم فتح المكتبة الشاملة' : 'Comprehensive Library opened');
+            }, 1000);
+        }
+
+        // دالة إنشاء نافذة منبثقة
+        function createModal(title, message, iconClass, iconColor, buttons) {
+            const modalOverlay = document.createElement('div');
+            modalOverlay.className = 'modal-overlay';
+            
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            
+            const modalIcon = document.createElement('div');
+            modalIcon.className = `modal-icon ${iconColor}`;
+            modalIcon.innerHTML = `<i class="${iconClass}"></i>`;
+            
+            const modalTitle = document.createElement('h3');
+            modalTitle.className = 'modal-title';
+            modalTitle.textContent = title;
+            
+            const modalMessage = document.createElement('p');
+            modalMessage.className = 'modal-message';
+            modalMessage.textContent = message;
+            
+            const modalButtons = document.createElement('div');
+            modalButtons.className = 'modal-buttons';
+            
+            buttons.forEach(button => {
+                const btn = document.createElement('button');
+                btn.className = `modal-button ${button.class}`;
+                btn.textContent = button.text;
+                btn.onclick = button.onclick;
+                modalButtons.appendChild(btn);
+            });
+            
+            modal.appendChild(modalIcon);
+            modal.appendChild(modalTitle);
+            modal.appendChild(modalMessage);
+            modal.appendChild(modalButtons);
+            modalOverlay.appendChild(modal);
+            document.body.appendChild(modalOverlay);
+            
+            // إظهار النافذة مع تأثير حركي
+            setTimeout(() => {
+                modalOverlay.classList.add('show');
+            }, 10);
+            
+            return modalOverlay;
+        }
+
+        // دالة حذف الحساب
+        function deleteAccount() {
+            const modal = createModal(
+                translations[currentLang].confirmDelete,
+                translations[currentLang].actionCannotBeUndone,
+                'fas fa-exclamation-triangle',
+                'danger',
+                [
+                    {
+                        text: translations[currentLang].cancel,
+                        class: 'cancel',
+                        onclick: function() {
+                            this.closest('.modal-overlay').remove();
+                        }
+                    },
+                    {
+                        text: translations[currentLang].delete,
+                        class: 'danger',
+                        onclick: function() {
+                            confirmDeleteAccount();
+                            this.closest('.modal-overlay').remove();
+                        }
+                    }
+                ]
+            );
+        }
+
+        // دالة تأكيد حذف الحساب
+        function confirmDeleteAccount() {
+            // حذف جميع البيانات المحفوظة
+            localStorage.removeItem('agricode_user');
+            localStorage.removeItem('agricode_lang');
+            localStorage.removeItem('agricode_settings');
+            
+            notyf.success(translations[currentLang].accountDeleted);
+            setTimeout(() => {
+                // إعادة تحميل الصفحة
+                location.reload();
+            }, 1500);
+        }
+
+        // دالة الخروج
+        function logout() {
+            const modal = createModal(
+                translations[currentLang].confirmLogout,
+                translations[currentLang].doYouWantToLogout,
+                'fas fa-sign-out-alt',
+                'info',
+                [
+                    {
+                        text: translations[currentLang].cancel,
+                        class: 'cancel',
+                        onclick: function() {
+                            this.closest('.modal-overlay').remove();
+                        }
+                    },
+                    {
+                        text: translations[currentLang].exit,
+                        class: 'confirm',
+                        onclick: function() {
+                            confirmLogout();
+                            this.closest('.modal-overlay').remove();
+                        }
+                    }
+                ]
+            );
+        }
+
+        // دالة تأكيد الخروج
+        function confirmLogout() {
+            // حذف بيانات المستخدم فقط
+            localStorage.removeItem('agricode_user');
+            
+            notyf.success(currentLang === 'ar' ? 'تم الخروج بنجاح' : 'Logged out successfully');
+            setTimeout(() => {
+                // إغلاق الصفحة
+                window.close();
+                // إذا لم يتمكن من إغلاق الصفحة، إعادة التوجيه لصفحة الدخول
+                setTimeout(() => {
+                    location.reload();
+                }, 500);
+            }, 1500);
+        }
+
+        // شريط التقدم
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progressBar').style.width = scrolled + '%';
+        });
+
+        // تهيئة الصفحة
+        window.addEventListener('load', () => {
+            // تحقق من وجود مستخدم مسجل
+            if (currentUser) {
+                document.getElementById('displayUserName').textContent = currentUser;
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+            }
+            
+            // تطبيق اللغة المحفوظة
+            changeLanguage(currentLang);
+            
+            // تحديث الأنيميشن
+            AOS.refresh();
+        });
+
+        // منع التحديث العرضي
+        window.addEventListener('beforeunload', (e) => {
+            if (currentUser) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
+    </script>
+</body>
+</html>
